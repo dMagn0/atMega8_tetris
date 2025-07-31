@@ -22,9 +22,10 @@ Data Stack size         : 256
 *****************************************************/
 
 #include <mega16.h>
-#include <avr/io.h>
+// #include <avr/io.h>
 #include <delay.h>
 #include <stdio.h>
+#include <stdint.h>
 #include "max7219.h"
 #include <string.h>
 
@@ -170,15 +171,16 @@ void main(void)
       ADMUX = MUX_ADC0;
       ADCSRA = 0x84;
 
-      spi_device *dev = max7219_init(0);
-      max7219_set_data(dev, data_to_spi);
+      SPI_init();
+      MAX7219_init();   // spi_device *dev = max7219_init(0);
+      MAX7219_send(data_to_spi);    // max7219_set_data(dev, data_to_spi);
       delay_ms(150);
 
       for(i = 0; i < 8; i++){
             for(j=0;j<8;j++){
                   data_to_spi[j] = (data_to_spi[j] << 1);
             }
-            max7219_set_data(dev, data_to_spi);
+            MAX7219_send(data_to_spi);    // max7219_set_data(dev, data_to_spi);
             delay_ms(150);
       }
 
@@ -190,7 +192,7 @@ void main(void)
 
             printf("\r\nx_axis: %d\r\ny_axis: %d\r\nbutton: %d\r\n", input.x_axis, input.y_axis, input.stick_down);
 
-            max7219_set_data(dev, data_to_spi);
+            MAX7219_send(data_to_spi);    // max7219_set_data(dev, data_to_spi);
             delay_ms(18);
       }
 }

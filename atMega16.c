@@ -123,7 +123,7 @@ void cria_imagem(){
 
 void main(void)
 {
-      char i =0;
+      char i, j=0;
 
       PORTA=0x00;
       DDRA=0x00;
@@ -168,7 +168,7 @@ void main(void)
       // ADC Clock frequency: 921,600 kHz
       // ADC Voltage Reference: Int., cap. on AREF
       // ADC Auto Trigger Source: ADC Stopped
-      ADMUX = MUX_ADC0;
+      ADMUX = MUX_ADC0_XAXIS;
       ADCSRA = 0x84;
 
       SPI_init();
@@ -190,7 +190,7 @@ void main(void)
 
             cria_imagem();
 
-            printf("\r\nx_axis: %d\r\ny_axis: %d\r\nbutton: %d\r\n", input.x_axis, input.y_axis, input.stick_down);
+            // printf("\r\nx_axis: %d\r\ny_axis: %d\r\nbutton: %d\r\n", input.x_axis, input.y_axis, input.stick_down);
 
             MAX7219_send(data_to_spi);    // max7219_set_data(dev, data_to_spi);
             delay_ms(18);

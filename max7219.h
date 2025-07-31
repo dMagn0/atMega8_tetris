@@ -7,9 +7,9 @@
 // Define os pinos SPI
 #define SPI_DDR   DDRB
 #define SPI_PORT  PORTB
-#define MOSI      PB3
-#define SCK       PB5
-#define CS        PB2
+#define MOSI      5
+#define SCK       7
+#define CS        4
 
 // Funções públicas
 void SPI_init(void);

@@ -26,20 +26,12 @@ Data Stack size         : 256
 #include <delay.h>
 #include <stdio.h>
 #include "max7219.h"
+#include <string.h>
 
 #define MUX_ADC0 0b01000000
 #define MUX_ADC1 0b01000001
+#define STICK_DOWN ~PINA.2
 
-uint8_t data_to_spi[8] = {
-      0b01100110,
-      0b11111111,
-      0b11111111,
-      0b11111111,
-      0b01111110,
-      0b00111100,
-      0b00011000,
-      0b00000000
-}
 unsigned int read_adc(unsigned char adc_input)
 {
       ADMUX = adc_input;
@@ -52,8 +44,85 @@ unsigned int read_adc(unsigned char adc_input)
       return ADCW;
 }
 
+uint8_t data_to_spi[8] = {
+      0b01100110,
+      0b11111111,
+      0b11111111,
+      0b11111111,
+      0b01111110,
+      0b00111100,
+      0b00011000,
+      0b00000000
+};
+
+typedef struct {
+    unsigned int x_axis;
+    unsigned int y_axis;
+    unsigned char stick_down;
+} InputDoControle;
+
+InputDoControle input = {0,0,0};
+
+void get_input(){
+      input.x_axis = read_adc(MUX_ADC0);
+      input.y_axis = read_adc(MUX_ADC1);
+      input.stick_down = STICK_DOWN;
+}
+
+uint8_t x_axis_table[] = {
+            0b11110000,
+            0b01110000,
+            0b00110000,
+            0b00010000,
+            0b00000000,
+            0b00010000,
+            0b00011000,
+            0b00011100,
+            0b00011110,
+            0b00011111
+};
+
+void cria_imagem(){
+
+      uint8_t index = input.x_axis / 110;
+      memset(data_to_spi, 0, sizeof(data_to_spi));
+      
+      if (index > 9) index = 9;
+      data_to_spi[4] = x_axis_table[index];
+
+      if(input.y_axis < 110){
+            data_to_spi[7] += 0b00010000;
+      }
+      if(input.y_axis < 220){
+            data_to_spi[6] = 0b00010000;
+      }
+      if(input.y_axis < 330){
+            data_to_spi[5] = 0b00010000;
+      }
+      if(input.y_axis < 440){
+            data_to_spi[4] |= 0b00010000;
+      }
+      if(input.y_axis > 550){
+            data_to_spi[4] |= 0b00010000;
+      }
+      if(input.y_axis > 660){
+            data_to_spi[3] = 0b00010000;
+      }
+      if(input.y_axis > 770){
+            data_to_spi[2] = 0b00010000;
+      }
+      if(input.y_axis > 880){
+            data_to_spi[1] = 0b00010000;
+      }
+      if(input.y_axis > 990){
+            data_to_spi[0] = 0b00010000;
+      }
+
+}
+
 void main(void)
 {
+      char i =0;
 
       PORTA=0x00;
       DDRA=0x00;
@@ -102,11 +171,26 @@ void main(void)
       ADCSRA = 0x84;
 
       spi_device *dev = max7219_init(0);
+      max7219_set_data(dev, data_to_spi);
+      delay_ms(150);
+
+      for(i = 0; i < 8; i++){
+            for(j=0;j<8;j++){
+                  data_to_spi[j] = (data_to_spi[j] << 1);
+            }
+            max7219_set_data(dev, data_to_spi);
+            delay_ms(150);
+      }
 
       while (1){
 
+            get_input();
+
+            cria_imagem();
+
+            printf("\r\nx_axis: %d\r\ny_axis: %d\r\n", input.x_axis, input.y_axis);
 
             max7219_set_data(dev, data_to_spi);
-            delay_ms(20);
+            delay_ms(18);
       }
 }

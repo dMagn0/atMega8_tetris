@@ -28,8 +28,8 @@ Data Stack size         : 256
 #include "max7219.h"
 #include <string.h>
 
-#define MUX_ADC0 0b01000000
-#define MUX_ADC1 0b01000001
+#define MUX_ADC0_XAXIS 0b01000000
+#define MUX_ADC1_YAXIS 0b01000001
 #define STICK_DOWN ~PINA.2
 
 unsigned int read_adc(unsigned char adc_input)
@@ -64,8 +64,8 @@ typedef struct {
 InputDoControle input = {0,0,0};
 
 void get_input(){
-      input.x_axis = read_adc(MUX_ADC0);
-      input.y_axis = read_adc(MUX_ADC1);
+      input.x_axis = read_adc(MUX_ADC0_XAXIS);
+      input.y_axis = read_adc(MUX_ADC1_YAXIS);
       input.stick_down = STICK_DOWN;
 }
 
@@ -188,7 +188,7 @@ void main(void)
 
             cria_imagem();
 
-            printf("\r\nx_axis: %d\r\ny_axis: %d\r\n", input.x_axis, input.y_axis);
+            printf("\r\nx_axis: %d\r\ny_axis: %d\r\nbutton: %d\r\n", input.x_axis, input.y_axis, input.stick_down);
 
             max7219_set_data(dev, data_to_spi);
             delay_ms(18);

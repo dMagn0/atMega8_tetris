@@ -32,7 +32,8 @@ void MAX7219_init(void) {
 }
 
 void MAX7219_display(uint8_t *data) {
-    for (uint8_t i = 0; i < 8; i++) {
+    uint8_t i = 0;
+    for (i = 0; i < 8; i++) {
         MAX7219_send(i + 1, data[i]);
     }
 }

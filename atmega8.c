@@ -52,15 +52,13 @@ void main(void)
   inicia_registradores();
   SPI_init();
   MAX7219_init();   
-  MAX7219_send(data_to_spi);
+  MAX7219_display(data_to_spi);
   delay_ms(150);  
 
   while (1)
   {
     get_input(&input_do_controle);
-
-    cria_imagem();
-
+    
     MAX7219_display(data_to_spi);  
     delay_ms(18);
   }

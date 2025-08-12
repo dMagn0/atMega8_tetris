@@ -27,7 +27,7 @@ void inicia_registradores()
     // MOSI (PB3), SCK (PB5) e SS (CS) (PB2) como saídas; 
     // MISO (PB4) como entrada;
     PORTB=0x00;
-    DDRB=0b00010110;
+    DDRB=0b00101100;
 
     PORTC=0x00;
     DDRC=0x00;

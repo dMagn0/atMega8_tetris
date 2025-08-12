@@ -61,7 +61,7 @@ void main(void)
 
     cria_imagem();
 
-    MAX7219_send(data_to_spi);  
+    MAX7219_display(data_to_spi);  
     delay_ms(18);
   }
 }

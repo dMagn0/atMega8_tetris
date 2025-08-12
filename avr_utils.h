@@ -26,7 +26,7 @@ typedef struct {
 } InputDoControle;
 
 unsigned int read_adc(unsigned char);
-void get_input(InputDoControle*){
+void get_input(InputDoControle*);
 void inicia_registradores();
 
 #endif

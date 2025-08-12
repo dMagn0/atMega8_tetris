@@ -15,9 +15,9 @@ unsigned int read_adc(unsigned char adc_input)
 
 void get_input(InputDoControle *input)
 {
-      input.x_axis = read_adc(MUX_ADC0_XAXIS);
-      input.y_axis = read_adc(MUX_ADC1_YAXIS);
-      input.stick_down = STICK_DOWN;
+      input->x_axis = read_adc(MUX_ADC0_XAXIS);
+      input->y_axis = read_adc(MUX_ADC1_YAXIS);
+      input->stick_down = STICK_DOWN;
 }
 
 void inicia_registradores()

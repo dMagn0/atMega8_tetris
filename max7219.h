@@ -2,14 +2,19 @@
 #define MAX7219_H
 
 // #include <avr/io.h>
+#include <mega8.h>
+#include <spi.h>
 #include <stdint.h>
 
 // Define os pinos SPI
 #define SPI_DDR   DDRB
 #define SPI_PORT  PORTB
-#define MOSI      5
-#define SCK       7
-#define CS        4
+// #define MOSI      5 ATMEGA 16
+// #define SCK       7
+// #define CS        4
+#define MOSI      3
+#define SCK       5
+#define CS        2
 
 // Funções públicas
 void SPI_init(void);

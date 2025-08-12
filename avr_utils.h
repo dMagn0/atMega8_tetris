@@ -17,7 +17,7 @@
 */
 #define MUX_ADC0_XAXIS 0
 #define MUX_ADC1_YAXIS 1
-#define STICK_DOWN_PIN ~PINC.2
+#define STICK_DOWN ~PINC.2
 
 typedef struct {
     unsigned int x_axis;

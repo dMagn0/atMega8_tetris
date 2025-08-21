@@ -15,7 +15,7 @@ unsigned int read_adc(unsigned char adc_input)
 
 void get_input(InputDoControle *input)
 {
-      input->x_axis = read_adc(MUX_ADC0_XAXIS);
+      input->x_axis = read_adc(MUX_ADC2_XAXIS);
       input->y_axis = read_adc(MUX_ADC1_YAXIS);
       input->stick_down = STICK_DOWN;
 }
@@ -107,7 +107,7 @@ void inicia_registradores()
     // ADC Clock frequency: 921,600 kHz
     // ADC Voltage Reference: Int., cap. on AREF
     // ADC Auto Trigger Source: ADC Stopped
-    ADMUX = MUX_ADC0_XAXIS;
+    ADMUX = MUX_ADC2_XAXIS;
     ADCSRA = 0x84;
 
     // SPI initialization

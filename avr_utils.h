@@ -15,9 +15,9 @@
     Y_AXIS = ADC1 (PC1)
     S_DOWN = ADC2 (PC2)
 */
-#define MUX_ADC0_XAXIS 0
+#define MUX_ADC2_XAXIS 2
 #define MUX_ADC1_YAXIS 1
-#define STICK_DOWN ~PINC.2
+#define STICK_DOWN ~PINC.0
 
 typedef struct {
     unsigned int x_axis;

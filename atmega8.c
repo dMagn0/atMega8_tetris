@@ -35,6 +35,9 @@ Data Stack size         : 256
 #include "max7219.h"
 #include "max7219.c"
 
+#include "engine_jogo.h"
+#include "engine_jogo.c"
+
 void main(void)
 {
   InputDoControle input_do_controle = {0,0,0};
@@ -59,6 +62,8 @@ void main(void)
   {
     get_input(&input_do_controle);
     
+    jogo(input_do_controle, &data_to_spi);
+
     MAX7219_display(data_to_spi);  
     delay_ms(18);
   }

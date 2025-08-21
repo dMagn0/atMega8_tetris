@@ -26,6 +26,8 @@ Data Stack size         : 256
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
+
 
 #include "avr_utils.h"
 #include "avr_utils.c"
@@ -42,17 +44,17 @@ void main(void)
 {
   InputDoControle input_do_controle = {0,0,0};
   uint8_t data_to_spi[8] = {
-      0b01100110,
-      0b11111111,
-      0b11111111,
-      0b11111111,
-      0b01111110,
-      0b00111100,
-      0b00011000,
-      0b00000000
+      0b01111000,
+      0b10000000,
+      0b11110000,
+      0b00001111,
+      0b11110000,
+      0b00100110,
+      0b00100001,
+      0b00011110
   };
 
-  srandom(1324);
+  srand(1324);
   inicia_registradores();
   SPI_init();
   MAX7219_init();   

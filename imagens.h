@@ -15,5 +15,28 @@ static const uint8_t lista_de_imagens[NUM_IMAGENS][TAM_IMAGEM] = {
     {0x00,0x81,0x42,0x24,0x24,0x42,0x81,0x00}, // Diamante
     {0x18,0x3C,0x7E,0xDB,0x7E,0x3C,0x18,0x00}  // Estrela
 };
+static const uint8_t lista_de_imagens_menu[3][TAM_IMAGEM] = {
+    {
+    0b00111100,
+    0b01000010,
+    0b10000001,
+    0b10011001,
+    0b10011001,
+    0b10000001,
+    0b01000010,
+    0b00111100
+    }, // bolinha
+    {0x18, 0x38, 0x08, 0x78, 0x40, 0x7C, 0x00, 0x00},
+    {
+    0b10000001,  // #      #
+    0b01000010,  //  #    #
+    0b00100100,  //   #  #
+    0b00011000,  //    ##
+    0b00011000,  //    ##
+    0b00100100,  //   #  #
+    0b01000010,  //  #    #
+    0b10000001  
+    } // Cobrinha
+};
 
 #endif // IMAGENS_H

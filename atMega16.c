@@ -31,7 +31,7 @@ Data Stack size         : 256
 
 #define MUX_ADC0_XAXIS 0b01000000
 #define MUX_ADC1_YAXIS 0b01000001
-#define STICK_DOWN ~PINA.2
+
 
 unsigned int read_adc(unsigned char adc_input)
 {

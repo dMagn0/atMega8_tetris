@@ -15,9 +15,16 @@ unsigned int read_adc(unsigned char adc_input)
 
 void get_input(InputDoControle *input)
 {
-      input->x_axis = read_adc(MUX_ADC2_XAXIS);
+      static char last_stick_input = 0;
+
+      input->x_axis = 1024 -read_adc(MUX_ADC2_XAXIS) ;
       input->y_axis = read_adc(MUX_ADC1_YAXIS);
-      input->stick_down = STICK_DOWN;
+
+      if(last_stick_input == STICK_DOWN){
+            input->stick_down = STICK_DOWN;
+      }
+
+      last_stick_input = STICK_DOWN;
 }
 
 void inicia_registradores()

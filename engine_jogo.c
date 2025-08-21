@@ -20,12 +20,21 @@ void reseta_marcadores(unsigned char* menu_auxiliar, uint16_t* count){
     return;
 }
 void set_rng_seed(uint16_t contador){
-    srandom(contador);
+    srand(contador);
     return;
 }
 void muda_fundo(uint8_t *data_to_spi, uint16_t contador){
     
     memcpy(data_to_spi, lista_de_imagens[contador%6], 8);
+    return;
+}
+void desenha_tela_de_menu(uint8_t *data_to_spi, uint16_t val_menu){
+    
+    memcpy(data_to_spi, lista_de_imagens_menu[val_menu], 8);
+    return;
+}
+void get_death_screen(uint8_t *data_to_spi){
+    memcpy(data_to_spi, lista_de_imagens_menu[2], 8);
     return;
 }
 
@@ -35,22 +44,25 @@ void jogo(InputDoControle *input_do_controle, uint8_t *data_to_spi){
     static uint16_t count = 0;
     uint16_t rng = 0;
 
-    uint8_t mapa_da_cobra[8][8];
-    uint8_t tamanho_da_cobra = 2;
-    uint8_t direcao_cobra = 0;
+    static uint8_t mapa_da_cobra[8][8];
+    static uint8_t tamanho_da_cobra = 2;
+    static uint8_t direcao_cobra = 0;
 
     switch(cena_principal){
         case CENA_INIT:
-            if( count >= 160 ){
-                reseta_marcadores(&menu_auxiliar,&count);
-                menu_auxiliar = 0;
-                cena_principal = CENA_SELECT;
-                break;
-            }
+            if(count >= 300){
 
-            if( count%20 == 19){
-                for(i = 0; i < 8; i++){
-                    data_to_spi[i] = (data_to_spi[i] << 1); 
+                if( count >= 460 ){
+                    reseta_marcadores(&menu_auxiliar,&count);
+                    menu_auxiliar = 0;
+                    cena_principal = CENA_SELECT;
+                    break;
+                }
+
+                if( count%20 == 19){
+                    for(i = 0; i < 8; i++){
+                        data_to_spi[i] = (data_to_spi[i] << 1); 
+                    }
                 }
             }
 
@@ -59,12 +71,14 @@ void jogo(InputDoControle *input_do_controle, uint8_t *data_to_spi){
         break;
         case CENA_SELECT:
 
-            if(input_do_controle->x_axis >= 770){
-                menu_auxiliar++;
-                desenha_tela_de_menu(data_to_spi, menu_auxiliar);
-            }else if(input_do_controle->x_axis <= 250){
-                menu_auxiliar--;
-                desenha_tela_de_menu(data_to_spi, menu_auxiliar);
+            if(count >= 50){
+                if(input_do_controle->x_axis >= 770){
+                    menu_auxiliar = (menu_auxiliar+1)%3;
+                    count = 0;
+                }else if(input_do_controle->x_axis <= 250){
+                    menu_auxiliar = (menu_auxiliar-1)%3;
+                    count = 0;
+                }
             }
             if ( count >= 65530 ){count = 0;}
             count ++;
@@ -82,16 +96,19 @@ void jogo(InputDoControle *input_do_controle, uint8_t *data_to_spi){
 
                 break;
                 case MENU_CALIBRA_CONTROLE:
+                    if(count == 1){desenha_tela_de_menu(data_to_spi, 0);}
                     if(input_do_controle->stick_down == 1){
+                        printf("calibr entra com input\r\n");
                         reseta_marcadores(&menu_auxiliar,&count);
-                        cena_principal = CENA_CALIBRA;
+                        cena_principal = CENA_INIT;
                     }
                 break;
                 case MENU_JOGO_COBRA:
+                    if(count == 1){desenha_tela_de_menu(data_to_spi, 1);}
                     if(input_do_controle->stick_down == 1){
-                        reseta_marcadores(&menu_auxiliar,&count);
+                        printf("entra com input\r\n");
                         set_rng_seed(count);
-                        rng = random();
+                        reseta_marcadores(&menu_auxiliar,&count);
                         cena_principal = CENA_JOGO_COBRA;
                     }
                 break;
@@ -113,15 +130,16 @@ void jogo(InputDoControle *input_do_controle, uint8_t *data_to_spi){
 
             //inicia
             if(count == 0){
-                for(uint8_t i=0;i<8;i++){
-                    for(uint8_t j=0;j<8;j++){
+                for(i=0;i<8;i++){
+                    for(j=0;j<8;j++){
                         mapa_da_cobra[i][j] = 0;
                     }
                 }
                 
                 tamanho_da_cobra = 2;
                 bateu_flag = 0;
-                switch (rng%4){
+                rng = rand()%4;
+                switch (rng){
                     case DIREITA:
                         mapa_da_cobra[2][2] = 1;
                         mapa_da_cobra[2][3] = 2;
@@ -139,57 +157,63 @@ void jogo(InputDoControle *input_do_controle, uint8_t *data_to_spi){
                         mapa_da_cobra[3][5] = 2;
                     break;
                 }
+                direcao_cobra = rng;
 
                 // gerar fruta
                 while(1){
-                    fruta_x = random()%8;
-                    fruta_y = random()%8;
+                    fruta_x = rand()%8;
+                    fruta_y = rand()%8;
                     if(mapa_da_cobra[fruta_y][fruta_x] == 0){
                         break;
                     }
                 }
-                break;
             }
 
+
             if(bateu_flag == 1){
-                if(count >= 200){
+                if(count >=50){
+                    get_death_screen(data_to_spi);
+                }
+                if(count >= 70){
                     cena_principal = CENA_INIT;
                     reseta_marcadores(&menu_auxiliar,&count);
                 }
+                count++;
                 return;
             }
 
             switch(direcao_cobra){
                 case DIREITA:
-                    if(input_do_controle->y_axis >= 770){ // direita
+                    if(input_do_controle->y_axis >= 950){ // direita
                         direcao_cobra = CIMA;
-                    }else if(input_do_controle->y_axis <= 250){
+                    }else if(input_do_controle->y_axis <= 80){
                         direcao_cobra = BAIXO;
                     }
                 break;
                 case BAIXO:
-                    if(input_do_controle->x_axis >= 770){ // direita
+                    if(input_do_controle->x_axis >= 950){ // direita
                         direcao_cobra = DIREITA;
-                    }else if(input_do_controle->x_axis <= 250){
+                    }else if(input_do_controle->x_axis <= 80){
                         direcao_cobra = ESQUERDA;
                     }
                 break;
                 case ESQUERDA:
-                    if(input_do_controle->y_axis >= 770){ // direita
+                    if(input_do_controle->y_axis >= 950){ // direita
                         direcao_cobra = CIMA;
-                    }else if(input_do_controle->y_axis <= 250){
+                    }else if(input_do_controle->y_axis <= 80){
                         direcao_cobra = BAIXO;
                     }
                 break;
                 case CIMA:
-                    if(input_do_controle->x_axis >= 770){ // direita
+                    if(input_do_controle->x_axis >= 950){ // direita
                         direcao_cobra = DIREITA;
-                    }else if(input_do_controle->x_axis <= 250){
+                    }else if(input_do_controle->x_axis <= 80){
                         direcao_cobra = ESQUERDA;
                     }
                 break;
             }
-            if(count == 20){
+            if(count >= 21){
+                printf("move\r\n");
                 for(i=0;i<8;i++){
                     for(j=0;j<8;j++){
                         if(mapa_da_cobra[i][j] == 0){
@@ -251,8 +275,8 @@ void jogo(InputDoControle *input_do_controle, uint8_t *data_to_spi){
                                         }
                                     }
                                     while(1){
-                                        fruta_x = random()%8;
-                                        fruta_y = random()%8;
+                                        fruta_x = rand()%8;
+                                        fruta_y = rand()%8;
                                         if(mapa_da_cobra[fruta_y][fruta_x] == 0){
                                             break;
                                         }
@@ -269,7 +293,7 @@ void jogo(InputDoControle *input_do_controle, uint8_t *data_to_spi){
 
                 }
 
-                count = 0;
+                count = 1;
             }
             count++;
 
@@ -281,7 +305,7 @@ void jogo(InputDoControle *input_do_controle, uint8_t *data_to_spi){
                     }
                 }
             }
-            if(count >=4 && count =< 16){
+            if(count >=4 && count <= 16){
                 data_to_spi[fruta_y] |= (1<<(7-fruta_x));
             }
             //transforma para data_to_spi

@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "avr_utils.h"
+#include "imagens.h"
 
 void jogo(InputDoControle input_do_controle, uint8_t *data_to_spi);
 

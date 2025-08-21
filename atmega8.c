@@ -52,6 +52,7 @@ void main(void)
       0b00000000
   };
 
+  srandom(1324);
   inicia_registradores();
   SPI_init();
   MAX7219_init();   
@@ -62,7 +63,7 @@ void main(void)
   {
     get_input(&input_do_controle);
     
-    jogo(input_do_controle, &data_to_spi);
+    jogo(&input_do_controle, data_to_spi);
 
     MAX7219_display(data_to_spi);  
     delay_ms(18);
